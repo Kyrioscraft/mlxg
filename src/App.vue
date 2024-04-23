@@ -1,127 +1,119 @@
 <template>
-  <div class="goods">
-    <van-swipe class="goods-swipe" :autoplay="3000">
-      <van-swipe-item v-for="thumb in goods.thumb" :key="thumb">
-        <img :src="thumb" />
-      </van-swipe-item>
-    </van-swipe>
-
-    <van-cell-group>
-      <van-cell>
-        <template #title>
-          <div class="goods-title">{{ goods.title }}</div>
-          <div class="goods-price">{{ formatPrice(goods.price) }}</div>
-        </template>
-      </van-cell>
-      <van-cell class="goods-express">
-        <template #title>
-          <van-col span="10">运费：{{ goods.express }}</van-col>
-          <van-col span="14">剩余：{{ goods.remain }}</van-col>
-        </template>
-      </van-cell>
-    </van-cell-group>
-
-    <van-cell-group class="goods-cell-group">
-      <van-cell value="进入店铺" icon="shop-o" is-link @click="sorry">
-        <template #title>
-          <span class="van-cell-text">有赞的店</span>
-          <van-tag class="goods-tag" type="danger">官方</van-tag>
-        </template>
-      </van-cell>
-      <van-cell title="线下门店" icon="location-o" is-link @click="sorry" />
-    </van-cell-group>
-
-    <van-cell-group class="goods-cell-group">
-      <van-cell title="查看商品详情" is-link @click="sorry" />
-    </van-cell-group>
-
-    <van-action-bar>
-      <van-action-bar-icon icon="chat-o" @click="sorry">
-        客服
-      </van-action-bar-icon>
-      <van-action-bar-icon icon="cart-o" @click="onClickCart">
-        购物车
-      </van-action-bar-icon>
-      <van-action-bar-button type="warning" @click="sorry">
-        加入购物车
-      </van-action-bar-button>
-      <van-action-bar-button type="danger" @click="sorry">
-        立即购买
-      </van-action-bar-button>
-    </van-action-bar>
+  <div id="app">
+    <div class="loadBox" v-if="
+      state.loading && JSON.stringify($route.meta) == '{}'
+        ? true
+        : $route.meta.flag
+    ">
+      <van-loading type="spinner" />
+    </div>
+    <div class="sy-bgbox">
+      <van-tabbar v-model="state.active" class="home-nav">
+        <van-tabbar-item to="/home">
+          <span>首页</span>
+          <template #icon="props">
+            <img src="@/assets/iconimg/sy-act.png" alt="" v-if="props.active" />
+            <img src="@/assets/iconimg/sy.png" alt="" v-else width="100%" />
+          </template>
+        </van-tabbar-item>
+        <van-tabbar-item to="/note">
+          <span>手记</span>
+          <template #icon="props">
+            <img src="@/assets/iconimg/shouji-act.png" alt="" v-if="props.active" />
+            <img src="@/assets/iconimg/shouji.png" alt="" v-else />
+          </template>
+        </van-tabbar-item>
+        <van-tabbar-item to="/find">
+          <span>发现</span>
+          <template #icon="props">
+            <img src="@/assets/iconimg/find-act.png" alt="" v-if="props.active" />
+            <img src="@/assets/iconimg/find.png" alt="" v-else />
+          </template>
+        </van-tabbar-item>
+        <van-tabbar-item to="/mine">
+          <span>我的</span>
+          <template #icon="props">
+            <img src="@/assets/iconimg/mine-act.png" alt="" v-if="props.active" />
+            <img src="@/assets/iconimg/mine.png" alt="" v-else />
+          </template>
+        </van-tabbar-item>
+      </van-tabbar>
+      <router-view v-slot="{ Component }">
+        <keep-alive>
+          <component :is="Component" />
+        </keep-alive>
+      </router-view>
+    </div>
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      goods: {
-        title: "美国伽力果213（约680g/3个）",
-        price: 2680,
-        express: "免运费",
-        remain: 19,
-        thumb: [
-          "https://img.yzcdn.cn/public_files/2017/10/24/e5a5a02309a41f9f5def56684808d9ae.jpeg",
-          "https://img.yzcdn.cn/public_files/2017/10/24/1791ba14088f9c2be8c610d0a6cc0f93.jpeg",
-        ],
-      },
-    };
-  },
+<script setup>
+import { onMounted, reactive } from 'vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const state = reactive({
+  loading: false,
+  active: 0
+})
 
-  methods: {
-    formatPrice() {
-      return "¥" + (this.goods.price / 100).toFixed(2);
-    },
+onMounted(() => {
+  fetchRoute()
+})
 
-    onClickCart() {
-      this.$router.push("cart");
-    },
+const fetchRoute = () => {
+  if (router.path == "/home") {
+    state.active = 0;
+  } else if (router.path == "/note") {
+    state.active = 1;
+  } else if (router.path == "/find") {
+    state.active = 2;
+  } else if (router.path == "/mine") {
+    state.active = 3;
+  }
+}
 
-    sorry() {
-      showToast("暂无后续逻辑~");
-    },
-  },
-};
+
 </script>
 
 <style lang="less">
-body {
-  font-size: 16px;
-  background-color: #f8f8f8;
-  -webkit-font-smoothing: antialiased;
+#app {
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  position: relative;
 }
 
-.goods {
-  padding-bottom: 50px;
+.loadBox {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
 
-  &-swipe {
-    img {
-      width: 100%;
-      display: block;
+.sy-bgbox {
+  width: 100%;
+
+  .home-nav {
+    height: 60px;
+    font-family: "siyuanMed";
+    z-index: 2;
+
+    .van-tabbar-item {
+      padding-top: 8px;
+      font-size: 0.6rem;
+      line-height: normal;
+      justify-content: space-around;
+      color: #a0a1a1;
     }
-  }
 
-  &-title {
-    font-size: 16px;
-  }
+    .van-tabbar-item--active {
+      color: #1a1a1a;
+    }
 
-  &-price {
-    color: #f44;
-  }
-
-  &-express {
-    color: #999;
-    font-size: 12px;
-    padding: 5px 15px;
-  }
-
-  &-cell-group {
-    margin: 15px 0;
-  }
-
-  &-tag {
-    margin-left: 5px;
+    &::after {
+      position: relative;
+    }
   }
 }
 </style>
