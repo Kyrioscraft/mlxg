@@ -1,5 +1,6 @@
 import Login from "@/views/Login.vue";
 import Home from "@/views/Home.vue"
+import Discovery from "@/views/Discovery.vue";
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 const routes = [
@@ -17,6 +18,11 @@ const routes = [
         name: 'login',
         component: Login
       },
+    {
+        path: '/discovery',
+        name: 'discovery',
+        component: Discovery
+    },
 ]
 
 const router = createRouter({

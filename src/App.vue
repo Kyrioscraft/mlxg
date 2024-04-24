@@ -5,42 +5,42 @@
         ? true
         : $route.meta.flag
     ">
-      <van-loading type="spinner" />
+      <van-loading type="spinner"/>
     </div>
     <div class="sy-bgbox">
       <van-tabbar v-model="state.active" class="home-nav">
         <van-tabbar-item to="/home">
           <span>首页</span>
           <template #icon="props">
-            <img src="@/assets/iconimg/sy-act.png" alt="" v-if="props.active" />
-            <img src="@/assets/iconimg/sy.png" alt="" v-else width="100%" />
+            <img src="@/assets/iconimg/sy-act.png" alt="" v-if="props.active"/>
+            <img src="@/assets/iconimg/sy.png" alt="" v-else width="100%"/>
           </template>
         </van-tabbar-item>
         <van-tabbar-item to="/note">
           <span>手记</span>
           <template #icon="props">
-            <img src="@/assets/iconimg/shouji-act.png" alt="" v-if="props.active" />
-            <img src="@/assets/iconimg/shouji.png" alt="" v-else />
+            <img src="@/assets/iconimg/shouji-act.png" alt="" v-if="props.active"/>
+            <img src="@/assets/iconimg/shouji.png" alt="" v-else/>
           </template>
         </van-tabbar-item>
-        <van-tabbar-item to="/find">
+        <van-tabbar-item to="/discovery">
           <span>发现</span>
           <template #icon="props">
-            <img src="@/assets/iconimg/find-act.png" alt="" v-if="props.active" />
-            <img src="@/assets/iconimg/find.png" alt="" v-else />
+            <img src="@/assets/iconimg/find-act.png" alt="" v-if="props.active"/>
+            <img src="@/assets/iconimg/find.png" alt="" v-else/>
           </template>
         </van-tabbar-item>
         <van-tabbar-item to="/mine">
           <span>我的</span>
           <template #icon="props">
-            <img src="@/assets/iconimg/mine-act.png" alt="" v-if="props.active" />
-            <img src="@/assets/iconimg/mine.png" alt="" v-else />
+            <img src="@/assets/iconimg/mine-act.png" alt="" v-if="props.active"/>
+            <img src="@/assets/iconimg/mine.png" alt="" v-else/>
           </template>
         </van-tabbar-item>
       </van-tabbar>
       <router-view v-slot="{ Component }">
         <keep-alive>
-          <component :is="Component" />
+          <component :is="Component"/>
         </keep-alive>
       </router-view>
     </div>
@@ -48,8 +48,9 @@
 </template>
 
 <script setup>
-import { onMounted, reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import {onMounted, reactive} from 'vue'
+import {useRouter} from 'vue-router'
+
 const router = useRouter()
 const state = reactive({
   loading: false,
@@ -61,15 +62,17 @@ onMounted(() => {
 })
 
 const fetchRoute = () => {
+  state.loading = true
   if (router.path == "/home") {
     state.active = 0;
   } else if (router.path == "/note") {
     state.active = 1;
-  } else if (router.path == "/find") {
+  } else if (router.path == "/discovery") {
     state.active = 2;
   } else if (router.path == "/mine") {
     state.active = 3;
   }
+  state.loading = false
 }
 
 
